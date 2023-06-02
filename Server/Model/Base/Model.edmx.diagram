@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ad674b682cda46d7a9984a1f2320896d" Name="Diagram1">
+        <EntityTypeShape EntityType="workload_baseModel.curriculum" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="workload_baseModel.discipline" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="workload_baseModel.finance_form_types" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="workload_baseModel.group" Width="1.5" PointX="6" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="workload_baseModel.profession" Width="1.5" PointX="3.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="workload_baseModel.specialization" Width="1.5" PointX="0.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="workload_baseModel.sysdiagram" Width="1.5" PointX="0.75" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="workload_baseModel.teachers_workload" Width="1.5" PointX="8.25" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="workload_baseModel.user" Width="1.5" PointX="6" PointY="8.125" IsExpanded="true" />
+        <AssociationConnector Association="workload_baseModel.FK_curriculum_disciplines" ManuallyRouted="false" />
+        <AssociationConnector Association="workload_baseModel.FK_curriculum_specialization" ManuallyRouted="false" />
+        <AssociationConnector Association="workload_baseModel.FK_teachers_workload_disciplines" ManuallyRouted="false" />
+        <AssociationConnector Association="workload_baseModel.FK_groups_finance_form_types" ManuallyRouted="false" />
+        <AssociationConnector Association="workload_baseModel.FK_groups_specialization" ManuallyRouted="false" />
+        <AssociationConnector Association="workload_baseModel.FK_teachers_workload_groups" ManuallyRouted="false" />
+        <AssociationConnector Association="workload_baseModel.FK_users_professions" ManuallyRouted="false" />
+        <AssociationConnector Association="workload_baseModel.FK_teachers_workload_users" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
