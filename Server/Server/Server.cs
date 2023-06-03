@@ -10,6 +10,7 @@ using Microsoft.Identity.Client;
 using Server.Model;
 using Server.Model.QA;
 using System.IO;
+using Server.Server.Utils;
 
 namespace Server.Server
 {
@@ -139,12 +140,20 @@ namespace Server.Server
                     {
                         //Загрузить файл в папку
                         var base64EncodedBytes = System.Convert.FromBase64String(result.file);
-                        var file = File.Create("C:\\Users\\apr1l1s\\source\\file.xls");
+                        var file_path= result.filename.Split('\\');
+
+                        var file_name = Environment.CurrentDirectory + "\\Files\\";
+                        file_name += file_path[file_path.Length - 1];
+                        Console.WriteLine(file_name);
+                        var file = File.Create(file_name);
                         file.Write(base64EncodedBytes, 0, base64EncodedBytes.Length);
                         file.Close();
                         Console.WriteLine("►Файл успешно загружен на сервер!");
                         //Парсинг сайта
-
+                        //Task.Run(() =>
+                        //{
+                        //    Parser.Parse(file.Name);
+                        //});
                         //Отправка успешного выполнения
                         if (result.filename == "")
                         {
