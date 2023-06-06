@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Server.Model.Base;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Server.Model.QA;
+using Server.Server.Hashing;
 
 namespace Server.Model
 {
     internal class Database
     {
-        public static int Authentication(string login, string pass)
+        public static LoginRequestQuestion Authentication(string login, string pass)
         {
             try
             {
@@ -22,28 +23,62 @@ namespace Server.Model
                 {
                     Console.WriteLine("►Успешно");
                     Console.WriteLine("Выполнение запроса...");
-                    Console.WriteLine($"SELECT * FROM users where [login] = \'{login}\' and pass = \'{login}\'");
-                    var user = bd.users.Where(u => u.login == login && u.pass == pass).FirstOrDefault();
-
-                    Console.WriteLine("►Успешно");
-                    if (user != null)
+                    //Поступающий пароль незахеширован
+                    //В базе хранится хешированный и посоленый пароль
+                    //Получить по логину соль
+                    var salt = bd.users.Where(u => u.login == login).Select(u =>u.pass_salt).FirstOrDefault();
+                    if (salt != null)
                     {
-                        Console.WriteLine("Пользователь выполнил вход!");
-                        return user.prof_id;
+                        var unhashedSaltedPass = pass + salt;
+                        var hashedSaltedPass = HashHelper.HashString(unhashedSaltedPass);
+                        var user = bd.users.Where(u => u.login == login && u.pass == hashedSaltedPass).FirstOrDefault();
+                        Console.WriteLine("►Успешно");
+                        if (user != null)
+                        {
+                            Console.WriteLine("Пользователь выполнил вход!");
+                            var answ = new LoginRequestQuestion()
+                            {
+                                teacher_id = user.user_id,
+                                prof_id = user.prof_id
+                            };
+                            return answ;
+                        }
+                        else
+                        {
+                            Console.WriteLine("►Ошибка авторизации");
+                            Console.WriteLine("Пароль или логин неверны");
+                            var answ = new LoginRequestQuestion()
+                            {
+                                teacher_id = 0,
+                                prof_id = 0
+                            };
+                            return answ;
+                        }
                     }
                     else
                     {
                         Console.WriteLine("►Ошибка авторизации");
                         Console.WriteLine("Пароль или логин неверны");
-                        return 0;
+                        var answ = new LoginRequestQuestion()
+                        {
+                            teacher_id = 0,
+                            prof_id = 0
+                        };
+                        return answ;
                     }
+                    
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("►Ошибка авторизации");
                 Console.WriteLine(ex.Message);
-                return 0;
+                var answ = new LoginRequestQuestion()
+                {
+                    teacher_id = 0,
+                    prof_id = 0
+                };
+                return answ;
             }
         }
         public static int FillWorkload()

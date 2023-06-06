@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище workload_baseModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Хранилище workload_baseModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="curriculum">
           <Key>
             <PropertyRef Name="curriculum_id" />
@@ -24,7 +24,7 @@
             <PropertyRef Name="discipline_id" />
           </Key>
           <Property Name="discipline_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="title" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="finance_form_types">
           <Key>
@@ -67,6 +67,17 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
+        <EntityType Name="teachers_schedule">
+          <Key>
+            <PropertyRef Name="schedule_id" />
+          </Key>
+          <Property Name="schedule_id" Type="int" Nullable="false" />
+          <Property Name="teacher_id" Type="int" Nullable="false" />
+          <Property Name="disciplines_id" Type="int" Nullable="false" />
+          <Property Name="hours" Type="int" Nullable="false" />
+          <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="date" Type="date" />
+        </EntityType>
         <EntityType Name="teachers_workload">
           <Key>
             <PropertyRef Name="workload_id" />
@@ -91,11 +102,12 @@
           </Key>
           <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="login" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="pass" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="pass" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="prof_id" Type="int" Nullable="false" />
           <Property Name="surname" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="middlename" Type="nvarchar" MaxLength="50" />
+          <Property Name="pass_salt" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <Association Name="FK_curriculum_disciplines">
           <End Role="disciplines" Type="Self.disciplines" Multiplicity="1" />
@@ -142,6 +154,42 @@
             </Principal>
             <Dependent Role="groups">
               <PropertyRef Name="specialization_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_teachers_schedule_disciplines">
+          <End Role="disciplines" Type="Self.disciplines" Multiplicity="1" />
+          <End Role="teachers_schedule" Type="Self.teachers_schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="disciplines">
+              <PropertyRef Name="discipline_id" />
+            </Principal>
+            <Dependent Role="teachers_schedule">
+              <PropertyRef Name="disciplines_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_teachers_schedule_groups">
+          <End Role="groups" Type="Self.groups" Multiplicity="1" />
+          <End Role="teachers_schedule" Type="Self.teachers_schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="groups">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="teachers_schedule">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_teachers_schedule_users">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="teachers_schedule" Type="Self.teachers_schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="teachers_schedule">
+              <PropertyRef Name="teacher_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -193,37 +241,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
-        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
-        </Function>
-        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="Хранилище workload_baseModelContainer">
           <EntitySet Name="curriculum" EntityType="Self.curriculum" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="disciplines" EntityType="Self.disciplines" Schema="dbo" store:Type="Tables" />
@@ -232,6 +249,7 @@
           <EntitySet Name="professions" EntityType="Self.professions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="specialization" EntityType="Self.specialization" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="teachers_schedule" EntityType="Self.teachers_schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="teachers_workload" EntityType="Self.teachers_workload" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_curriculum_disciplines" Association="Self.FK_curriculum_disciplines">
@@ -250,6 +268,18 @@
             <End Role="specialization" EntitySet="specialization" />
             <End Role="groups" EntitySet="groups" />
           </AssociationSet>
+          <AssociationSet Name="FK_teachers_schedule_disciplines" Association="Self.FK_teachers_schedule_disciplines">
+            <End Role="disciplines" EntitySet="disciplines" />
+            <End Role="teachers_schedule" EntitySet="teachers_schedule" />
+          </AssociationSet>
+          <AssociationSet Name="FK_teachers_schedule_groups" Association="Self.FK_teachers_schedule_groups">
+            <End Role="groups" EntitySet="groups" />
+            <End Role="teachers_schedule" EntitySet="teachers_schedule" />
+          </AssociationSet>
+          <AssociationSet Name="FK_teachers_schedule_users" Association="Self.FK_teachers_schedule_users">
+            <End Role="users" EntitySet="users" />
+            <End Role="teachers_schedule" EntitySet="teachers_schedule" />
+          </AssociationSet>
           <AssociationSet Name="FK_teachers_workload_disciplines" Association="Self.FK_teachers_workload_disciplines">
             <End Role="disciplines" EntitySet="disciplines" />
             <End Role="teachers_workload" EntitySet="teachers_workload" />
@@ -267,8 +297,7 @@
             <End Role="users" EntitySet="users" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="workload_baseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -293,8 +322,9 @@
             <PropertyRef Name="discipline_id" />
           </Key>
           <Property Name="discipline_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="title" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="curricula" Relationship="Self.FK_curriculum_disciplines" FromRole="disciplines" ToRole="curriculum" />
+          <NavigationProperty Name="teachers_schedule" Relationship="Self.FK_teachers_schedule_disciplines" FromRole="disciplines" ToRole="teachers_schedule" />
           <NavigationProperty Name="teachers_workload" Relationship="Self.FK_teachers_workload_disciplines" FromRole="disciplines" ToRole="teachers_workload" />
         </EntityType>
         <EntityType Name="finance_form_types">
@@ -316,6 +346,7 @@
           <Property Name="full_title" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="finance_form_types" Relationship="Self.FK_groups_finance_form_types" FromRole="groups" ToRole="finance_form_types" />
           <NavigationProperty Name="specialization" Relationship="Self.FK_groups_specialization" FromRole="groups" ToRole="specialization" />
+          <NavigationProperty Name="teachers_schedule" Relationship="Self.FK_teachers_schedule_groups" FromRole="groups" ToRole="teachers_schedule" />
           <NavigationProperty Name="teachers_workload" Relationship="Self.FK_teachers_workload_groups" FromRole="groups" ToRole="teachers_workload" />
         </EntityType>
         <EntityType Name="profession">
@@ -345,6 +376,20 @@
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
+        <EntityType Name="teachers_schedule">
+          <Key>
+            <PropertyRef Name="schedule_id" />
+          </Key>
+          <Property Name="schedule_id" Type="Int32" Nullable="false" />
+          <Property Name="teacher_id" Type="Int32" Nullable="false" />
+          <Property Name="disciplines_id" Type="Int32" Nullable="false" />
+          <Property Name="hours" Type="Int32" Nullable="false" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
+          <Property Name="date" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="discipline" Relationship="Self.FK_teachers_schedule_disciplines" FromRole="teachers_schedule" ToRole="disciplines" />
+          <NavigationProperty Name="group" Relationship="Self.FK_teachers_schedule_groups" FromRole="teachers_schedule" ToRole="groups" />
+          <NavigationProperty Name="user" Relationship="Self.FK_teachers_schedule_users" FromRole="teachers_schedule" ToRole="users" />
+        </EntityType>
         <EntityType Name="teachers_workload">
           <Key>
             <PropertyRef Name="workload_id" />
@@ -372,12 +417,14 @@
           </Key>
           <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="login" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="pass" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pass" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="prof_id" Type="Int32" Nullable="false" />
           <Property Name="surname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="middlename" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pass_salt" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="profession" Relationship="Self.FK_users_professions" FromRole="users" ToRole="professions" />
+          <NavigationProperty Name="teachers_schedule" Relationship="Self.FK_teachers_schedule_users" FromRole="users" ToRole="teachers_schedule" />
           <NavigationProperty Name="teachers_workload" Relationship="Self.FK_teachers_workload_users" FromRole="users" ToRole="teachers_workload" />
         </EntityType>
         <Association Name="FK_curriculum_disciplines">
@@ -401,6 +448,18 @@
             </Principal>
             <Dependent Role="curriculum">
               <PropertyRef Name="specialization_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_teachers_schedule_disciplines">
+          <End Role="disciplines" Type="Self.discipline" Multiplicity="1" />
+          <End Role="teachers_schedule" Type="Self.teachers_schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="disciplines">
+              <PropertyRef Name="discipline_id" />
+            </Principal>
+            <Dependent Role="teachers_schedule">
+              <PropertyRef Name="disciplines_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -440,6 +499,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_teachers_schedule_groups">
+          <End Role="groups" Type="Self.group" Multiplicity="1" />
+          <End Role="teachers_schedule" Type="Self.teachers_schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="groups">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="teachers_schedule">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_teachers_workload_groups">
           <End Role="groups" Type="Self.group" Multiplicity="1" />
           <End Role="teachers_workload" Type="Self.teachers_workload" Multiplicity="*" />
@@ -464,6 +535,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_teachers_schedule_users">
+          <End Role="users" Type="Self.user" Multiplicity="1" />
+          <End Role="teachers_schedule" Type="Self.teachers_schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="teachers_schedule">
+              <PropertyRef Name="teacher_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_teachers_workload_users">
           <End Role="users" Type="Self.user" Multiplicity="1" />
           <End Role="teachers_workload" Type="Self.teachers_workload" Multiplicity="*" />
@@ -484,6 +567,7 @@
           <EntitySet Name="professions" EntityType="Self.profession" />
           <EntitySet Name="specializations" EntityType="Self.specialization" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="teachers_schedule" EntityType="Self.teachers_schedule" />
           <EntitySet Name="teachers_workload" EntityType="Self.teachers_workload" />
           <EntitySet Name="users" EntityType="Self.user" />
           <AssociationSet Name="FK_curriculum_disciplines" Association="Self.FK_curriculum_disciplines">
@@ -493,6 +577,10 @@
           <AssociationSet Name="FK_curriculum_specialization" Association="Self.FK_curriculum_specialization">
             <End Role="specialization" EntitySet="specializations" />
             <End Role="curriculum" EntitySet="curricula" />
+          </AssociationSet>
+          <AssociationSet Name="FK_teachers_schedule_disciplines" Association="Self.FK_teachers_schedule_disciplines">
+            <End Role="disciplines" EntitySet="disciplines" />
+            <End Role="teachers_schedule" EntitySet="teachers_schedule" />
           </AssociationSet>
           <AssociationSet Name="FK_teachers_workload_disciplines" Association="Self.FK_teachers_workload_disciplines">
             <End Role="disciplines" EntitySet="disciplines" />
@@ -506,6 +594,10 @@
             <End Role="specialization" EntitySet="specializations" />
             <End Role="groups" EntitySet="groups" />
           </AssociationSet>
+          <AssociationSet Name="FK_teachers_schedule_groups" Association="Self.FK_teachers_schedule_groups">
+            <End Role="groups" EntitySet="groups" />
+            <End Role="teachers_schedule" EntitySet="teachers_schedule" />
+          </AssociationSet>
           <AssociationSet Name="FK_teachers_workload_groups" Association="Self.FK_teachers_workload_groups">
             <End Role="groups" EntitySet="groups" />
             <End Role="teachers_workload" EntitySet="teachers_workload" />
@@ -514,52 +606,15 @@
             <End Role="professions" EntitySet="professions" />
             <End Role="users" EntitySet="users" />
           </AssociationSet>
+          <AssociationSet Name="FK_teachers_schedule_users" Association="Self.FK_teachers_schedule_users">
+            <End Role="users" EntitySet="users" />
+            <End Role="teachers_schedule" EntitySet="teachers_schedule" />
+          </AssociationSet>
           <AssociationSet Name="FK_teachers_workload_users" Association="Self.FK_teachers_workload_users">
             <End Role="users" EntitySet="users" />
             <End Role="teachers_workload" EntitySet="teachers_workload" />
           </AssociationSet>
-          <FunctionImport Name="sp_alterdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_creatediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_dropdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(workload_baseModel.sp_helpdiagramdefinition_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(workload_baseModel.sp_helpdiagrams_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_renamediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="new_diagramname" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="sp_upgraddiagrams" />
         </EntityContainer>
-        <ComplexType Name="sp_helpdiagramdefinition_Result">
-          <Property Type="Int32" Name="version" Nullable="true" />
-          <Property Type="Binary" Name="definition" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="sp_helpdiagrams_Result">
-          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
-          <Property Type="Int32" Name="OwnerID" Nullable="false" />
-        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -635,6 +690,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="teachers_schedule">
+            <EntityTypeMapping TypeName="workload_baseModel.teachers_schedule">
+              <MappingFragment StoreEntitySet="teachers_schedule">
+                <ScalarProperty Name="schedule_id" ColumnName="schedule_id" />
+                <ScalarProperty Name="teacher_id" ColumnName="teacher_id" />
+                <ScalarProperty Name="disciplines_id" ColumnName="disciplines_id" />
+                <ScalarProperty Name="hours" ColumnName="hours" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="date" ColumnName="date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="teachers_workload">
             <EntityTypeMapping TypeName="workload_baseModel.teachers_workload">
               <MappingFragment StoreEntitySet="teachers_workload">
@@ -664,33 +731,10 @@
                 <ScalarProperty Name="surname" ColumnName="surname" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="middlename" ColumnName="middlename" />
+                <ScalarProperty Name="pass_salt" ColumnName="pass_salt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Хранилище workload_baseModel.sp_alterdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Хранилище workload_baseModel.sp_creatediagram" />
-          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Хранилище workload_baseModel.sp_dropdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Хранилище workload_baseModel.sp_helpdiagramdefinition">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="workload_baseModel.sp_helpdiagramdefinition_Result">
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Хранилище workload_baseModel.sp_helpdiagrams">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="workload_baseModel.sp_helpdiagrams_Result">
-                <ScalarProperty Name="Database" ColumnName="Database" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Owner" ColumnName="Owner" />
-                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Хранилище workload_baseModel.sp_renamediagram" />
-          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Хранилище workload_baseModel.sp_upgraddiagrams" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -10,10 +10,19 @@
 namespace Server.Model.Base
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class sp_helpdiagramdefinition_Result
+    public partial class teachers_schedule
     {
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public int schedule_id { get; set; }
+        public int teacher_id { get; set; }
+        public int disciplines_id { get; set; }
+        public int hours { get; set; }
+        public int group_id { get; set; }
+        public Nullable<System.DateTime> date { get; set; }
+    
+        public virtual discipline discipline { get; set; }
+        public virtual group group { get; set; }
+        public virtual user user { get; set; }
     }
 }

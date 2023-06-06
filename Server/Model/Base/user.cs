@@ -17,6 +17,7 @@ namespace Server.Model.Base
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public user()
         {
+            this.teachers_schedule = new HashSet<teachers_schedule>();
             this.teachers_workload = new HashSet<teachers_workload>();
         }
     
@@ -27,8 +28,11 @@ namespace Server.Model.Base
         public string surname { get; set; }
         public string name { get; set; }
         public string middlename { get; set; }
+        public string pass_salt { get; set; }
     
         public virtual profession profession { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<teachers_schedule> teachers_schedule { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<teachers_workload> teachers_workload { get; set; }
     }

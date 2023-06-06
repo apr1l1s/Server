@@ -85,9 +85,14 @@ namespace Server.Server
             var msg = "<h1>Sorry!<h1><p>Server is not online<p>";
             return new Reply(ErrorHandler.StatusType.internal_server_error, msg);
         }
-        public void GET()
+        public void GET(Request request)
         {
-
+            string answer = "";
+            if (request.path == "/workload")
+            {
+                var request_string = JsonSerializer.Deserialize<GetTeacherWorkloadQuestion>(question);
+                Request request = new Request("GET", "/workload", request_string);
+            }
         }
         public Reply POST(Request request)
         {
@@ -102,14 +107,17 @@ namespace Server.Server
                     result = JsonSerializer.Deserialize<LoginRequestResult>(request.content);
                     if (result != null)
                     {
-                        var prof_id = Database.Authentication(result.login, result.pass);
-                        if (prof_id == 0)
+                        var user = Database.Authentication(result.login, result.pass);
+                        if (user.prof_id == 0)
                         {
                             return new Reply(ErrorHandler.StatusType.unauthorized, "");
                         }
                         else
                         {
-                            answer = JsonSerializer.Serialize(new LoginRequestQuestion() { prof_id = prof_id });
+                            answer = JsonSerializer.Serialize(new LoginRequestQuestion() { 
+                                teacher_id = user.teacher_id,
+                                prof_id = user.prof_id 
+                            });
                             Console.WriteLine(answer);
                             return new Reply(ErrorHandler.StatusType.ok, answer);
                         }
