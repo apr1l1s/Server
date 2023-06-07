@@ -66,8 +66,7 @@ namespace Server.Server
             switch (request.method)
             {
                 case "GET":
-                    GET(); 
-                    break;
+                    return GET(request);
                 case "POST":
                     if (have_body)
                     {
@@ -85,14 +84,24 @@ namespace Server.Server
             var msg = "<h1>Sorry!<h1><p>Server is not online<p>";
             return new Reply(ErrorHandler.StatusType.internal_server_error, msg);
         }
-        public void GET(Request request)
+        public Reply GET(Request request)
         {
-            string answer = "";
-            if (request.path == "/workload")
+            //string answer = "";
+            if (request.path.Contains("/workload"))
             {
-                var request_string = JsonSerializer.Deserialize<GetTeacherWorkloadQuestion>(question);
-                Request request = new Request("GET", "/workload", request_string);
+                var request_string = request.path.Split('/');
+                //Получить данные из бд
+                var teacher_id = int.Parse(request_string.Last());
+                var list = Database.GetTeacherWorkloads(teacher_id);
+                foreach(var elem in list.list)
+                {
+                    Console.WriteLine(JsonSerializer.Serialize(elem));
+                }
+                var reply_string = JsonSerializer.Serialize(list);
+
+                return new Reply(ErrorHandler.StatusType.ok, reply_string);
             }
+            return new Reply(ErrorHandler.StatusType.bad_request, "");
         }
         public Reply POST(Request request)
         {

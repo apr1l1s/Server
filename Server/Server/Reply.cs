@@ -13,12 +13,15 @@ namespace Server.Server
             this.status = status;
             headers.Add("Date: ", GetDate());
             headers.Add("Server: ", "apr1l1s");
-            headers.Add("Content-Type: ", ContentTypeToString(ContentType.html));
-            headers.Add("Content-Length: ", content.Length.ToString());
+            if (content != "")
+            {
+                headers.Add("Content-Type: ", ContentTypeToString(ContentType.html));
+                headers.Add("Content-Length: ", content.Length.ToString());
+                this.content = content;
+            }
             headers.Add("Access-Control-Allow-Methods: ", "*");
             headers.Add("Access-Control-Allow-Headers: ", "*");
             headers.Add("Access-Control-Allow-Origin: ", "*");
-            this.content = content;
         }
         enum ContentType {
             json,html

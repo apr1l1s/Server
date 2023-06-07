@@ -14,6 +14,48 @@ namespace Server.Model
 {
     internal class Database
     {
+        public static GetTeacherWorkloadResult GetTeacherWorkloads(int teacher_id)
+        {
+            var list = new List<GetTeacherWorkloadElem>();
+            try
+            {
+                Console.WriteLine("Подключение к бд...");
+                using(var bd = new workload_baseEntities())
+                {
+                    Console.WriteLine("►Успешно");
+                    Console.WriteLine("Выполнение запроса...");
+                    var tws = bd.teachers_workload.Where(w => w.teacher_id == teacher_id).ToList();
+                    if (tws.Count > 0)
+                    {
+                        Console.WriteLine(tws.Count);
+                        foreach (var tw in tws)
+                        {
+                            var elem = new GetTeacherWorkloadElem()
+                            {
+                                year = tw.year,
+                                term_num = tw.term_num,
+                                group_standard_name = tw.group.standart_title,
+                                group_fullname = tw.group.full_title,
+                                discipline = tw.discipline.title,
+                                finance_form = tw.group.finance_form_types.type,
+                                sum = tw.sum,
+                                in_week = tw.in_week,
+                                theory = tw.theory,
+                                practice = tw.practice,
+                                consultation = tw.consultation,
+                                course = tw.course,
+                                exam = tw.exam
+                            };
+                            list.Add(elem);
+                        }
+                    }
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return new GetTeacherWorkloadResult() { list = list };
+        }
         public static LoginRequestQuestion Authentication(string login, string pass)
         {
             try
@@ -83,6 +125,7 @@ namespace Server.Model
         }
         public static int FillWorkload()
         {
+
             return 0;
         }
         public static int AddTeacher(user user)

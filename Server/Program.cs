@@ -23,7 +23,7 @@ namespace Server
             //Console.WriteLine("Введите айпи сервера");
             //var answ = Console.ReadLine();
             
-            S.Server server = new S.Server("26.45.191.207");
+            S.Server server = new S.Server("26.185.68.193");
 
             //var buf = JsonSerializer.Deserialize<LoginRequestResult>("{\"login\":\"user\",\"pass\":\"user\"}");
             //if (buf != null) Console.WriteLine($"{buf.login} {buf.pass}");

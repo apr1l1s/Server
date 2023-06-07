@@ -31,7 +31,6 @@ namespace Server.Model.Base
         public virtual DbSet<group> groups { get; set; }
         public virtual DbSet<profession> professions { get; set; }
         public virtual DbSet<specialization> specializations { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<teachers_schedule> teachers_schedule { get; set; }
         public virtual DbSet<teachers_workload> teachers_workload { get; set; }
         public virtual DbSet<user> users { get; set; }

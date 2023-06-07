@@ -4,14 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="9d5fe5e2e7d14084a38e3568a0e34770" Name="Diagram1">
+      <Diagram DiagramId="a642441713ff41e4962c4d0b7e31fd36" Name="Diagram1">
         <EntityTypeShape EntityType="workload_baseModel.curriculum" Width="1.5" PointX="3" PointY="5.625" IsExpanded="true" />
         <EntityTypeShape EntityType="workload_baseModel.discipline" Width="1.5" PointX="0.75" PointY="3.125" IsExpanded="true" />
         <EntityTypeShape EntityType="workload_baseModel.finance_form_types" Width="1.5" PointX="3.75" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="workload_baseModel.group" Width="1.5" PointX="6" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="workload_baseModel.profession" Width="1.5" PointX="3.75" PointY="10.375" IsExpanded="true" />
         <EntityTypeShape EntityType="workload_baseModel.specialization" Width="1.5" PointX="0.75" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="workload_baseModel.sysdiagram" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="workload_baseModel.teachers_schedule" Width="1.5" PointX="8.25" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="workload_baseModel.teachers_workload" Width="1.5" PointX="11.25" PointY="5.125" IsExpanded="true" />
         <EntityTypeShape EntityType="workload_baseModel.user" Width="1.5" PointX="6" PointY="9.625" IsExpanded="true" />

@@ -274,9 +274,6 @@
     <Compile Include="Model\Base\specialization.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Base\sysdiagram.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
     <Compile Include="Model\Base\teachers_schedule.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -287,7 +284,9 @@
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\Database.cs" />
+    <Compile Include="Model\QA\GetTeacherWorkloadElem.cs" />
     <Compile Include="Model\QA\GetTeacherWorkloadQuestion.cs" />
+    <Compile Include="Model\QA\GetTeacherWorkloadResult.cs" />
     <Compile Include="Model\QA\LoginRequestQuestion.cs" />
     <Compile Include="Model\QA\LoginRequestResult.cs" />
     <Compile Include="Model\QA\StatusRequestAnswer.cs" />
